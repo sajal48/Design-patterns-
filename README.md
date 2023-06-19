@@ -158,114 +158,164 @@ The Builder pattern separates the construction of an object from its representat
 
 ```Java
   
-// Product class
-class Pizza {
-    private String dough;
-    private String sauce;
-    private String topping;
 
-    public void setDough(String dough) {
-        this.dough = dough;
+public class Card {
+
+    private String cardNo = "";
+    private String cardType = "";
+    private String userName = "";
+    private Integer fee = 0;
+    private Integer maxNoOfUsePerMonth = 0;
+
+    public void setFee(Integer fee) {
+        this.fee = fee;
     }
 
-    public void setSauce(String sauce) {
-        this.sauce = sauce;
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
     }
 
-    public void setTopping(String topping) {
-        this.topping = topping;
+    public void setMaxNoOfUsePerMonth(Integer maxNoOfUsePerMonth) {
+        this.maxNoOfUsePerMonth = maxNoOfUsePerMonth;
     }
 
-    public void display() {
-        System.out.println("Pizza with dough: " + dough + ", sauce: " + sauce + ", topping: " + topping);
+    public Card(String cardNo, String userName) {
+        this.cardNo = cardNo;
+        this.userName = userName;
+    }
+
+
+
+    public String getCardNo() {
+        return cardNo;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+    public Integer getFee() {
+        return fee;
+    }
+    public Integer getMaxNoOfUsePerMonth() {
+        return maxNoOfUsePerMonth;
+    }
+
+    @Override
+    public String toString() {
+        return "Card{" +
+                "Card No ='" + cardNo + '\'' +
+                ", Card Type='" + cardType + '\'' +
+                ", User Name='" + userName + '\'' +
+                ", Fee=" + fee +
+                ", Max No Of Use Per Month=" + maxNoOfUsePerMonth +
+                '}';
+    }
+}
+
+
+public class BankRepresentative {
+  private CardBuilder cardBuilder;
+
+  public BankRepresentative setCardType(CardType type){
+      switch (type){
+          case DEBIT -> cardBuilder = new DebitCardBuilder();
+          case  CREDIT -> cardBuilder = new CreditCardBuilder();
+      }
+      return this;
+  }
+
+  public BankRepresentative setHolderName(String cardHolderName){
+      cardBuilder.createCard(cardHolderName);
+      return  this;
+  }
+
+  public void makeCard(){
+        cardBuilder.setType();
+        cardBuilder.setFee();
+        cardBuilder.setMaxUsage();
+  }
+  public Card handCard(){
+      return cardBuilder.getCard();
+  }
+
+}
+
+public abstract class CardBuilder {
+    protected Card card;
+
+    public void createCard(String name){
+        Random rnd = new Random();
+        int n = 100000 + rnd.nextInt(900000);
+        card = new Card(Integer.toString(n),name);
+    }
+    Card getCard(){
+        return card;
+    }
+    public abstract void setType();
+    public abstract void setFee();
+    public abstract void setMaxUsage();
+}
+
+public class CreditCardBuilder  extends CardBuilder{
+
+
+    @Override
+    public void setType() {
+        card.setCardType("Credit Card");
+
+    }
+
+    @Override
+    public void setFee() {
+        card.setFee(1299);
+
+    }
+    @Override
+    public void setMaxUsage() {
+        card.setMaxNoOfUsePerMonth(20);
+    }
+}
+
+public class DebitCardBuilder  extends CardBuilder{
+
+
+    @Override
+    public void setType() {
+        card.setCardType("Debit Card");
+    }
+
+    @Override
+    public void setFee() {
+        card.setFee(750);
+    }
+    @Override
+    public void setMaxUsage() {
+        card.setMaxNoOfUsePerMonth(50);
     }
 }
 
 
-// Abstract Builder
-abstract class PizzaBuilder {
-    protected Pizza pizza;
+ public static void main(String[] args) {
 
-    public Pizza getPizza() {
-        return pizza;
+        BankRepresentative bankRepresentative = new BankRepresentative();
+
+        bankRepresentative.setCardType(CardType.CREDIT)
+                .setHolderName("Person A");
+        bankRepresentative.makeCard();
+        Card creditCard = bankRepresentative.handCard();
+        System.out.println(creditCard);
+
+        bankRepresentative.setCardType(CardType.DEBIT)
+                .setHolderName("Person B")
+                .makeCard();
+        Card debitCard = bankRepresentative.handCard();
+        System.out.println(debitCard);
+
     }
 
-    public void createNewPizza() {
-        pizza = new Pizza();
-    }
 
-    public abstract void buildDough();
-    public abstract void buildSauce();
-    public abstract void buildTopping();
-}
 
-// Concrete Builder
-class MargheritaPizzaBuilder extends PizzaBuilder {
-    public void buildDough() {
-        pizza.setDough("Regular crust");
-    }
 
-    public void buildSauce() {
-        pizza.setSauce("Tomato sauce");
-    }
 
-    public void buildTopping() {
-        pizza.setTopping("Mozzarella cheese");
-    }
-}
-
-// Concrete Builder
-class SpicyPizzaBuilder extends PizzaBuilder {
-    public void buildDough() {
-        pizza.setDough("Thin crust");
-    }
-
-    public void buildSauce() {
-        pizza.setSauce("Spicy tomato sauce");
-    }
-
-    public void buildTopping() {
-        pizza.setTopping("Pepperoni and jalapeno");
-    }
-}
-
-// Director
-class PizzaDirector {
-    private PizzaBuilder pizzaBuilder;
-
-    public void setPizzaBuilder(PizzaBuilder pizzaBuilder) {
-        this.pizzaBuilder = pizzaBuilder;
-    }
-
-    public Pizza getPizza() {
-        return pizzaBuilder.getPizza();
-    }
-
-    public void constructPizza() {
-        pizzaBuilder.createNewPizza();
-        pizzaBuilder.buildDough();
-        pizzaBuilder.buildSauce();
-        pizzaBuilder.buildTopping();
-    }
-}
-
-// Usage
-public class Main {
-    public static void main(String[] args) {
-        PizzaDirector director = new PizzaDirector();
-        PizzaBuilder margheritaBuilder = new MargheritaPizzaBuilder();
-        PizzaBuilder spicyBuilder = new SpicyPizzaBuilder();
-
-        director.setPizzaBuilder(margheritaBuilder);
-        director.constructPizza();
-        Pizza margheritaPizza = director.getPizza();
-        margheritaPizza.display();
-
-        director.setPizzaBuilder(spicyBuilder);
-        director.constructPizza();
-        Pizza spicyPizza = director.getPizza();
-        spicyPizza.display();
-    }
-}
 
   
