@@ -87,6 +87,7 @@ public class Main {
         audioPlayer.play("avi", "video.avi");
     }
 }
+```
 
 
 ## Bridge Pattern
@@ -150,7 +151,7 @@ public class Main {
         greenCircle.draw();
     }
 }
-
+```
 
 ## Builder Pattern
 The Builder pattern separates the construction of an object from its representation. It allows the same construction process to create different representations. Here's an example of the Builder pattern implemented in Java:
@@ -179,6 +180,7 @@ class Pizza {
         System.out.println("Pizza with dough: " + dough + ", sauce: " + sauce + ", topping: " + topping);
     }
 }
+
 
 // Abstract Builder
 abstract class PizzaBuilder {
