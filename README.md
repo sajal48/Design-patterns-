@@ -1,7 +1,7 @@
 ## Adapter Pattern
 The Adapter pattern allows objects with incompatible interfaces to work together. It acts as a bridge between two incompatible classes. Here's an example of the Adapter pattern implemented in Java:
 
-```
+```Java
 // Target interface
 interface MediaPlayer {
     void play(String audioType, String fileName);
@@ -87,11 +87,12 @@ public class Main {
         audioPlayer.play("avi", "video.avi");
     }
 }
-'''
+
+
 ## Bridge Pattern
 The Bridge pattern decouples an abstraction from its implementation, allowing them to vary independently. It uses composition instead of inheritance to achieve this separation. Here's an example of the Bridge pattern implemented in Java:
 
-```
+```Java
   
   // Abstraction
 abstract class Shape {
@@ -149,11 +150,12 @@ public class Main {
         greenCircle.draw();
     }
 }
-'''
+
+
 ## Builder Pattern
 The Builder pattern separates the construction of an object from its representation. It allows the same construction process to create different representations. Here's an example of the Builder pattern implemented in Java:
 
-```
+```Java
   
 // Product class
 class Pizza {
@@ -263,5 +265,5 @@ public class Main {
         spicyPizza.display();
     }
 }
-'''
+
   
